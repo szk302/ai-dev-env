@@ -1,0 +1,21 @@
+services:
+  # nvidia:
+  #   image: nvidia/cuda:12.3.2-base-ubuntu22.04
+  #   command: nvidia-smi
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - 11434:11434
+    volumes:
+      - ollama:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [compute, utility]
+              
+volumes:
+  ollama:

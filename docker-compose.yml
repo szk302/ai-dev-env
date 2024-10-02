@@ -9,13 +9,37 @@ services:
       - 11434:11434
     volumes:
       - ollama:/root/.ollama
+    networks:
+      - ollama
+    command:
+      - serve
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:11434 || exit 1"]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['0']
+              device_ids: ["0"]
               capabilities: [compute, utility]
-              
+  ollama-model:
+    image: ollama/ollama
+    networks:
+      - ollama
+    environment:
+      - OLLAMA_HOST=ollama
+    command:
+      - run
+      - llama3.2
+    depends_on:
+      ollama:
+        condition: service_started
 volumes:
   ollama:
+networks:
+  ollama:
+    name: ollama

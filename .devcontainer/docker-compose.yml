@@ -1,0 +1,15 @@
+services:
+  sample:
+    build: ./
+    tty: true
+    stdin_open: true
+    volumes:
+      - type: bind
+        source: "../"
+        target: "/work"
+    networks:
+      - ollama
+
+networks:
+  ollama:
+    external: true
